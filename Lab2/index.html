@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Responsive Web Page</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #0077cc;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #f4f4f4;
+    }
+
+    nav a {
+      padding: 1rem;
+      text-decoration: none;
+      color: #333;
+    }
+
+    nav a:hover {
+      background: #ddd;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .sidebar {
+      background: #eee;
+      padding: 1rem;
+    }
+
+    .content {
+      background: #fafafa;
+      padding: 1rem;
+    }
+
+    footer {
+      background: #0077cc;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    /* Responsive Layout */
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      nav {
+        flex-direction: column;
+      }
+    }
+
+    /* Interactive Element */
+    .toggle-btn {
+      background: #0077cc;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Responsive Web Page</h1>
+  </header>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Sidebar</h2>
+      <p>Useful links and info go here.</p>
+    </aside>
+
+    <section class="content">
+      <h2>Main Content</h2>
+      <p>This section adjusts layout based on screen size.</p>
+      <button class="toggle-btn">Toggle Extra Info</button>
+      <p class="extra hidden">Here’s some interactive content revealed by JavaScript!</p>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Responsive Design Demo</p>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.toggle-btn');
+    const extra = document.querySelector('.extra');
+    btn.addEventListener('click', () => {
+      extra.classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>
