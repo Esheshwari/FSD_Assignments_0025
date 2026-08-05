@@ -1,0 +1,17 @@
+@media (max-width: 1024px) {
+  section {
+    padding: 80px 5%;
+  }
+  .section-title {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: 60px 4%;
+  }
+  .section-title {
+    font-size: 1.8rem;
+  }
+}

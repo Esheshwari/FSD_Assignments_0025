@@ -1,0 +1,38 @@
+/* src/components/Footer/Footer.css */
+.footer {
+  padding: 40px 8%;
+  border-top: 1px solid var(--card-border);
+  background: rgba(5, 8, 22, 0.95);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.footer p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 15px;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+.footer-socials a:hover {
+  color: var(--primary);
+}

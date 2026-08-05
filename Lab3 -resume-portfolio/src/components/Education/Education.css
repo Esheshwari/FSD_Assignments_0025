@@ -1,0 +1,60 @@
+/* src/components/Education/Education.css */
+.timeline {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.timeline-header h3 {
+  color: var(--primary);
+  font-size: 1.2rem;
+}
+
+.duration {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.institution {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.cgpa {
+  color: var(--text-muted);
+  margin: 8px 0;
+}
+
+.coursework {
+  margin-top: 15px;
+}
+
+.coursework span {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--primary);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}

@@ -1,0 +1,14 @@
+:root {
+  --bg-color: #050816;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --primary: #38BDF8;
+  --secondary: #8B5CF6;
+  --accent: #06B6D4;
+  --text-main: #FFFFFF;
+  --text-muted: #9CA3AF;
+  --success: #22C55E;
+  --glass-glow: rgba(56, 189, 248, 0.15);
+  --font-family: 'Poppins', sans-serif;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

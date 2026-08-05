@@ -1,0 +1,27 @@
+/* src/components/Certifications/Certifications.css */
+.certifications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.cert-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cert-icon {
+  font-size: 1.8rem;
+  color: var(--secondary);
+}
+
+.cert-card h4 {
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.cert-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
