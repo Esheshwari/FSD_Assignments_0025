@@ -19,16 +19,26 @@ const SurveyForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Basic Validation
-    if (!formData.studentName.trim() || !formData.email.trim()) {
+    const nameTrimmed = formData.studentName.trim();
+    const emailTrimmed = formData.email.trim().toLowerCase();
+
+    // 1. Basic Required Field Check
+    if (!nameTrimmed || !emailTrimmed) {
       toast.error('Please fill in all required fields!');
       return;
     }
 
-    // Trigger Success Toast
-    toast.success(`Thank you, ${formData.studentName}! Your feedback has been submitted.`);
+    // 2. RVU Email Domain Validation
+    const rvuEmailRegex = /^[a-zA-Z0-9._%+-]+@rvu\.edu\.in$/;
+    if (!rvuEmailRegex.test(emailTrimmed)) {
+      toast.error('Only RVU email addresses (@rvu.edu.in) are allowed!');
+      return;
+    }
 
-    // Reset Form
+    // 3. Success Toast
+    toast.success(`Thank you, ${nameTrimmed}! Your survey response has been saved.`);
+
+    // 4. Reset Form State
     setFormData({
       studentName: '',
       email: '',
@@ -41,9 +51,9 @@ const SurveyForm = () => {
   return (
     <div className="form-card">
       <h2>Full-Stack Course Experience Survey</h2>
-      <p>We value your feedback to improve future cohorts!</p>
+      <p>Please use your official RVU student email to complete this survey.</p>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label htmlFor="studentName">Full Name *</label>
           <input
@@ -53,20 +63,18 @@ const SurveyForm = () => {
             value={formData.studentName}
             onChange={handleChange}
             placeholder="e.g., Alex Johnson"
-            required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="email">Email Address *</label>
+          <label htmlFor="email">RVU Email Address *</label>
           <input
             type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="e.g., alex@example.com"
-            required
+            placeholder="e.g., alex.j@rvu.edu.in"
           />
         </div>
 
