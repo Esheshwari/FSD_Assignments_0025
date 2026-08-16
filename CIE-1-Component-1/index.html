@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IdeaForge — Mind Map & Freehand Art Canvas</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #182220;
+            --glass-bg: rgba(38, 52, 48, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --accent-green: #52b788;
+            --accent-gold: #e2b13c;
+            --accent-terracotta: #d97706;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+            --node-bg: #283633;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body, html {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+        }
+
+        /* Ambient Warm Orbs */
+        .ambient-bg {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+        }
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.25;
+        }
+        .orb-1 { width: 450px; height: 450px; background: var(--accent-green); top: -100px; left: -100px; }
+        .orb-2 { width: 500px; height: 500px; background: var(--accent-gold); bottom: -150px; right: -100px; }
+
+        /* Site Info Badge / Description (Top Left) */
+        .info-card {
+            position: fixed; top: 1.25rem; left: 1.25rem; z-index: 10;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            padding: 0.85rem 1.25rem;
+            border-radius: 18px;
+            max-width: 280px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .info-card h2 {
+            font-size: 0.95rem; font-weight: 800; color: var(--accent-gold);
+            display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;
+        }
+
+        .info-card p {
+            font-size: 0.78rem; color: var(--text-sub); line-height: 1.4;
+        }
+
+        .info-tags {
+            display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap;
+        }
+
+        .tag-pill {
+            background: rgba(82, 183, 136, 0.18); color: var(--accent-green);
+            font-size: 0.68rem; font-weight: 700; padding: 0.2rem 0.5rem;
+            border-radius: 20px; border: 1px solid rgba(82, 183, 136, 0.3);
+        }
+
+        /* Header Toolbar */
+        header {
+            position: fixed; top: 1.25rem; left: 58%; transform: translateX(-50%);
+            z-index: 10;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            display: flex; align-items: center; gap: 1.25rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 800; font-size: 1.1rem; color: var(--accent-gold); }
+        .brand-icon {
+            width: 34px; height: 34px;
+            background: var(--accent-green);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem; color: #182220;
+        }
+
+        .tool-divider { width: 1px; height: 26px; background: var(--glass-border); }
+
+        .btn-tool {
+            background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border);
+            color: var(--text-main); width: 38px; height: 38px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
+        }
+        .btn-tool:hover, .btn-tool.active {
+            background: var(--accent-green); color: #182220; transform: scale(1.08);
+            border-color: transparent;
+        }
+
+        .color-picker {
+            width: 32px; height: 32px; border-radius: 50%; border: 2px solid white;
+            cursor: pointer; background: none; overflow: hidden; padding: 0;
+        }
+        .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+        .color-picker::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+        .brush-size { width: 80px; accent-color: var(--accent-green); }
+
+        /* Canvas Workspace */
+        #viewport {
+            width: 100vw; height: 100vh; position: relative; z-index: 1;
+        }
+
+        /* SVG Connections */
+        #svgCanvas {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 2;
+        }
+
+        /* Art Canvas */
+        #artCanvas {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            z-index: 3; pointer-events: none;
+        }
+        #artCanvas.active { pointer-events: auto; }
+
+        /* Flowchart Nodes */
+        .node-container {
+            position: absolute; inset: 0; z-index: 4; pointer-events: none;
+        }
+
+        .node {
+            position: absolute;
+            width: 230px;
+            background: var(--node-bg);
+            backdrop-filter: blur(12px);
+            border: 2px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 1rem;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            pointer-events: auto;
+            cursor: move;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+
+        .node:hover {
+            border-color: var(--accent-green);
+        }
+
+        .node.connecting-target {
+            border-color: var(--accent-gold) !important;
+            box-shadow: 0 0 20px rgba(226, 177, 60, 0.6) !important;
+        }
+
+        .node.completed {
+            border-color: var(--accent-green);
+            background: rgba(82, 183, 136, 0.2);
+        }
+
+        .node-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;
+        }
+
+        .node-title {
+            background: transparent; border: none; color: var(--text-main);
+            font-weight: 700; font-size: 0.95rem; width: 75%; outline: none;
+        }
+
+        .node-actions { display: flex; gap: 0.4rem; }
+        .node-btn {
+            background: transparent; border: none; color: var(--text-sub);
+            cursor: pointer; font-size: 0.85rem; transition: color 0.2s;
+        }
+        .node-btn:hover { color: var(--text-main); }
+        .node-btn.delete:hover { color: #f87171; }
+
+        .node-body textarea {
+            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border);
+            border-radius: 8px; padding: 0.5rem; color: var(--text-main);
+            font-size: 0.82rem; resize: none; outline: none; height: 50px;
+        }
+
+        /* Node Connect Anchor Dot */
+        .anchor {
+            width: 18px; height: 18px; background: var(--accent-gold);
+            border: 2px solid white; border-radius: 50%; position: absolute;
+            right: -9px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; transition: transform 0.2s;
+            box-shadow: 0 0 10px rgba(226, 177, 60, 0.8);
+        }
+        .anchor:hover, .anchor.active { transform: translateY(-50%) scale(1.4); background: var(--accent-green); }
+
+        /* Balloon Celebration Animation */
+        .floating-balloon {
+            position: fixed; bottom: -100px; font-size: 3rem; z-index: 999;
+            pointer-events: none; animation: floatUp 3.5s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(25deg); opacity: 0; }
+        }
+
+        @media(max-width: 900px) {
+            .info-card { display: none; }
+            header { left: 50%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+</div>
+
+<!-- Left Side Info Header Card -->
+<div class="info-card">
+    <h2><i class="fa-solid fa-palette"></i> What is FocusHaven?</h2>
+    <p>A hybrid digital whiteboard for <strong>mind-mapping & freehand art</strong>. Create task nodes, link branches, and paint sketches directly on screen.</p>
+    <div class="info-tags">
+        <span class="tag-pill">🎨 Freehand Art</span>
+        <span class="tag-pill">📌 Mind Map</span>
+        <span class="tag-pill">🔗 Vector Links</span>
+    </div>
+</div>
+
+<!-- Main Top Toolbar -->
+<header>
+    <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-cubes"></i></div>
+        IdeaForge
+    </div>
+
+    <div class="tool-divider"></div>
+
+    <button class="btn-tool active" id="toolSelect" title="Select & Drag Nodes" onclick="setTool('select')">
+        <i class="fa-solid fa-arrow-pointer"></i>
+    </button>
+    <button class="btn-tool" id="toolPen" title="Freehand Draw" onclick="setTool('pen')">
+        <i class="fa-solid fa-pen-nib"></i>
+    </button>
+    <button class="btn-tool" id="toolEraser" title="Eraser" onclick="setTool('eraser')">
+        <i class="fa-solid fa-eraser"></i>
+    </button>
+
+    <div class="tool-divider"></div>
+
+    <input type="color" id="drawColor" class="color-picker" value="#52b788" title="Brush Color">
+    <input type="range" id="brushSize" class="brush-size" min="2" max="30" value="5" title="Brush Size">
+
+    <div class="tool-divider"></div>
+
+    <button class="btn-tool" title="Add Idea Node" onclick="addNode()">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+    <button class="btn-tool" title="Clear Art Canvas" onclick="clearArt()">
+        <i class="fa-solid fa-trash-can"></i>
+    </button>
+</header>
+
+<div id="viewport">
+    <svg id="svgCanvas"></svg>
+    <canvas id="artCanvas"></canvas>
+    <div class="node-container" id="nodeContainer"></div>
+</div>
+
+<script>
+    let currentTool = 'select';
+    let isDrawing = false;
+    let nodes = [];
+    let connections = [];
+    let selectedSourceNodeId = null;
+
+    const artCanvas = document.getElementById('artCanvas');
+    const ctx = artCanvas.getContext('2d');
+    const drawColor = document.getElementById('drawColor');
+    const brushSize = document.getElementById('brushSize');
+    const svgCanvas = document.getElementById('svgCanvas');
+    const nodeContainer = document.getElementById('nodeContainer');
+
+    function resizeCanvas() {
+        artCanvas.width = window.innerWidth;
+        artCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function setTool(tool) {
+        currentTool = tool;
+        document.querySelectorAll('.btn-tool').forEach(b => b.classList.remove('active'));
+        
+        if (tool === 'select') {
+            document.getElementById('toolSelect').classList.add('active');
+            artCanvas.classList.remove('active');
+        } else if (tool === 'pen') {
+            document.getElementById('toolPen').classList.add('active');
+            artCanvas.classList.add('active');
+        } else if (tool === 'eraser') {
+            document.getElementById('toolEraser').classList.add('active');
+            artCanvas.classList.add('active');
+        }
+    }
+
+    // Drawing Logic
+    artCanvas.addEventListener('mousedown', (e) => {
+        if (currentTool === 'select') return;
+        isDrawing = true;
+        ctx.beginPath();
+        ctx.moveTo(e.clientX, e.clientY);
+    });
+
+    artCanvas.addEventListener('mousemove', (e) => {
+        if (!isDrawing || currentTool === 'select') return;
+
+        ctx.lineWidth = brushSize.value;
+        ctx.lineCap = 'round';
+
+        if (currentTool === 'eraser') {
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.lineTo(e.clientX, e.clientY);
+            ctx.stroke();
+        } else {
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.strokeStyle = drawColor.value;
+            ctx.lineTo(e.clientX, e.clientY);
+            ctx.stroke();
+        }
+    });
+
+    artCanvas.addEventListener('mouseup', () => isDrawing = false);
+
+    function clearArt() {
+        ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
+    }
+
+    // Add and Render Nodes
+    function addNode(x = 320 + Math.random() * 150, y = 220 + Math.random() * 150, title = "New Concept") {
+        const id = 'node_' + Date.now();
+        nodes.push({ id, x, y, title, text: '', completed: false });
+        renderNodes();
+    }
+
+    function renderNodes() {
+        nodeContainer.innerHTML = '';
+        nodes.forEach(n => {
+            const el = document.createElement('div');
+            el.className = `node ${n.completed ? 'completed' : ''}`;
+            if (selectedSourceNodeId === n.id) el.classList.add('connecting-target');
+            el.style.left = `${n.x}px`;
+            el.style.top = `${n.y}px`;
+            el.id = n.id;
+
+            el.innerHTML = `
+                <div class="node-header">
+                    <input class="node-title" value="${n.title}" onchange="updateNodeTitle('${n.id}', this.value)">
+                    <div class="node-actions">
+                        <button class="node-btn" title="Complete Branch" onclick="toggleComplete('${n.id}')"><i class="fa-solid fa-circle-check"></i></button>
+                        <button class="node-btn delete" title="Delete" onclick="deleteNode('${n.id}')"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+                <div class="node-body">
+                    <textarea placeholder="Write notes / art ideas..." onchange="updateNodeText('${n.id}', this.value)">${n.text}</textarea>
+                </div>
+                <div class="anchor ${selectedSourceNodeId === n.id ? 'active' : ''}" title="Click to Connect" onclick="handleAnchorClick('${n.id}', event)"></div>
+            `;
+
+            el.onclick = (e) => {
+                if (selectedSourceNodeId && selectedSourceNodeId !== n.id) {
+                    connections.push({ from: selectedSourceNodeId, to: n.id });
+                    selectedSourceNodeId = null;
+                    renderNodes();
+                }
+            };
+
+            makeDraggable(el, n);
+            nodeContainer.appendChild(el);
+        });
+        drawConnections();
+    }
+
+    function handleAnchorClick(nodeId, e) {
+        e.stopPropagation();
+        if (!selectedSourceNodeId) {
+            selectedSourceNodeId = nodeId;
+        } else if (selectedSourceNodeId !== nodeId) {
+            connections.push({ from: selectedSourceNodeId, to: nodeId });
+            selectedSourceNodeId = null;
+        } else {
+            selectedSourceNodeId = null;
+        }
+        renderNodes();
+    }
+
+    function makeDraggable(el, nodeObj) {
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        el.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.classList.contains('anchor') || e.target.closest('.node-btn')) return;
+            if (currentTool !== 'select') return;
+
+            isDragging = true;
+            offsetX = e.clientX - nodeObj.x;
+            offsetY = e.clientY - nodeObj.y;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            nodeObj.x = e.clientX - offsetX;
+            nodeObj.y = e.clientY - offsetY;
+            el.style.left = `${nodeObj.x}px`;
+            el.style.top = `${nodeObj.y}px`;
+            drawConnections();
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+    }
+
+    function updateNodeTitle(id, val) {
+        const n = nodes.find(x => x.id === id);
+        if (n) n.title = val;
+    }
+
+    function updateNodeText(id, val) {
+        const n = nodes.find(x => x.id === id);
+        if (n) n.text = val;
+    }
+
+    function toggleComplete(id) {
+        const n = nodes.find(x => x.id === id);
+        if (n) {
+            n.completed = !n.completed;
+            if (n.completed) triggerCelebration();
+            renderNodes();
+        }
+    }
+
+    function deleteNode(id) {
+        nodes = nodes.filter(x => x.id !== id);
+        connections = connections.filter(c => c.from !== id && c.to !== id);
+        if (selectedSourceNodeId === id) selectedSourceNodeId = null;
+        renderNodes();
+    }
+
+    function drawConnections() {
+        svgCanvas.innerHTML = '';
+        connections.forEach(c => {
+            const fromNode = nodes.find(n => n.id === c.from);
+            const toNode = nodes.find(n => n.id === c.to);
+
+            if (fromNode && toNode) {
+                const x1 = fromNode.x + 230;
+                const y1 = fromNode.y + 55;
+                const x2 = toNode.x;
+                const y2 = toNode.y + 55;
+
+                const dx = Math.abs(x2 - x1) * 0.5;
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+                path.setAttribute('stroke', '#e2b13c');
+                path.setAttribute('stroke-width', '4');
+                path.setAttribute('fill', 'none');
+
+                svgCanvas.appendChild(path);
+            }
+        });
+    }
+
+    function triggerCelebration() {
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+        const balloons = ['🎈', '✨', '🌿', '⭐'];
+        for (let i = 0; i < 5; i++) {
+            const b = document.createElement('div');
+            b.className = 'floating-balloon';
+            b.innerText = balloons[Math.floor(Math.random() * balloons.length)];
+            b.style.left = `${20 + i * 15}%`;
+            document.body.appendChild(b);
+            setTimeout(() => b.remove(), 3500);
+        }
+    }
+
+    // Default Initial Setup
+    addNode(340, 240, "Brainstorming");
+    addNode(680, 240, "Art Direction");
+    connections.push({ from: nodes[0].id, to: nodes[1].id });
+    renderNodes();
+</script>
+</body>
+</html>
