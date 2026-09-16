@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
-import Cart from './pages/Cart';
-import Orders from './pages/Orders';
-import Login from './pages/Login';
+import Cart from './pages/cart';
+import Orders from './pages/orders';
+import Login from './pages/login';
 import NotFound from './pages/NotFound';
 
 export default function App() {
