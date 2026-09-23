@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .about-container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .about-header h1 {
+            font-size: 45px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .about-header h1 span {
+            color: #667eea;
+        }
+
+        .about-header .line {
+            width: 70px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: auto;
+            border-radius: 10px;
+        }
+
+        .about-content {
+            color: #555;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+
+        .about-content p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .highlight {
+            background: #f4f5ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+            color: #444;
+        }
+
+        .about-btn {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 0;
+            padding: 13px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        .about-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            .about-container {
+                padding: 30px 22px;
+            }
+
+            .about-header h1 {
+                font-size: 35px;
+            }
+
+            .about-content {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="about-container">
+
+        <div class="about-header">
+            <h1>About <span>Us</span></h1>
+            <div class="line"></div>
+        </div>
+
+        <div class="about-content">
+
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+
+            <div class="highlight">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Assumenda sint voluptas enim, corrupti at nihil eligendi,
+                voluptatum ullam atque unde deserunt totam id voluptate inventore
+                eos, vero sed nulla eum!
+            </div>
+
+            <p>
+                Esse nostrum assumenda laborum enim consectetur cum impedit
+                exercitationem neque. Unde et obcaecati illo vero, ratione ex
+                dolorem quisquam facilis ab. Excepturi recusandae unde quasi
+                laborum dolore incidunt ab facere, qui aspernatur veritatis animi
+                illo voluptas, repudiandae accusamus.
+            </p>
+
+            <p>
+                Nemo officia culpa voluptate harum natus alias sint dignissimos
+                dolorum. Officia deleniti facilis doloribus sunt rerum,
+                asperiores nesciunt consequatur. Quis unde eum sit quam vitae
+                dolore sint neque accusamus?
+            </p>
+
+            <a href="#" class="about-btn">Learn More</a>
+
+        </div>
+
+    </div>
+  <p style="text-align: center; margin-top: 20px; color: #fff;">
+    Click here to download logo
+    <a href="/download-logo" class="about-btn">Download Logo</a>
+</p>
+
+
+</body>
+</html>

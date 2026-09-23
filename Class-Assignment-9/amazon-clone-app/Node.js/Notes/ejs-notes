@@ -1,0 +1,309 @@
+Express + EJS — Step-by-Step Notes
+
+1. What is EJS?
+EJS stands for Embedded JavaScript Templates.
+EJS is a template engine that allows us to create dynamic HTML pages using JavaScript data.
+Instead of creating separate HTML files for every user, we can create one EJS file and send different data to it.
+2. Create an Express Project
+Create a project folder called:
+amazon-clone-app
+Initialize Node.js:
+npm init -y
+3. Install Required Packages
+npm install express
+npm install ejs
+npm install body-parser
+4. Create index.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+express imports the Express package.
+express() creates the Express application.
+5. Add Body Parser
+app.use(bodyParser.urlencoded({ extended: true }));
+This tells Express how to understand URL-encoded incoming data.
+The data can then be accessed using req.body.
+6. Set EJS as View Engine
+app.set('view engine', 'ejs');
+app.set() → sets an Express configuration.
+'view engine' → tells Express which view engine to use.
+'ejs' → tells Express to use EJS.
+In simple words: Express, use EJS whenever I ask you to render a view/page.
+7. Create the views Folder
+Create a folder named views.
+By default, Express looks for EJS files inside the views folder.
+Project structure:
+amazon-clone-app/
+├── node_modules/
+├── views/
+├── index.js
+├── package.json
+└── package-lock.json
+8. Create profile.ejs
+Inside views, create profile.ejs.
+Use:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= firstName %> | Social Media</title>
+</head>
+<body>
+    <p><%= firstName %></p>
+    <img
+        src="<%= profileImage %>"
+        alt="profile image"
+        width="500"
+        height="300"
+    >
+    <h1><%= email %></h1>
+</body>
+</html>
+9. Understanding <%= %>
+<%= firstName %> means: take the value of firstName and put it inside the HTML.
+If Express sends:
+firstName: 'Danish'
+Then:
+<p><%= firstName %></p>
+becomes:
+<p>Danish</p>
+10. Create a Route
+app.get('/danish', (req, res) => {
+    res.render('profile', {
+        firstName: 'Danish',
+        profileImage: 'https://reqres.in/img/faces/1-image.jpg',
+        email: 'danish@example.com'
+    });
+});
+res.render('profile', {...}) tells Express to find profile.ejs and generate HTML using the supplied data.
+11. Create Another Route
+app.get('/poorvi', (req, res) => {
+    res.render('profile', {
+        firstName: 'Poorvi',
+        profileImage: 'https://reqres.in/img/faces/3-image.jpg',
+        email: 'poorvi@example.com'
+    });
+});
+12. Create Another Route for Deeksha
+app.get('/deeksha', (req, res) => {
+    res.render('profile', {
+        firstName: 'Deeksha',
+        profileImage: 'https://reqres.in/img/faces/2-image.jpg',
+        email: 'deeksha@example.com'
+    });
+});
+13. Start the Server
+At the bottom of index.js:
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+Run:
+node index.js
+Or:
+npx nodemon index.js
+14. Open the Pages
+Danish:
+http://localhost:3000/danish
+Poorvi:
+http://localhost:3000/poorvi
+Deeksha:
+http://localhost:3000/deeksha
+15. Complete index.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
+app.get('/danish', (req, res) => {
+    res.render('profile', {
+        firstName: 'Danish',
+        profileImage: 'https://reqres.in/img/faces/1-image.jpg',
+        email: 'danish@example.com'
+    });
+});
+app.get('/poorvi', (req, res) => {
+    res.render('profile', {
+        firstName: 'Poorvi',
+        profileImage: 'https://reqres.in/img/faces/3-image.jpg',
+        email: 'poorvi@example.com'
+    });
+});
+app.get('/deeksha', (req, res) => {
+    res.render('profile', {
+        firstName: 'Deeksha',
+        profileImage: 'https://reqres.in/img/faces/2-image.jpg',
+        email: 'deeksha@example.com'
+    });
+});
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+16. Complete Folder Structure
+
+amazon-clone-app/
+├── node_modules/
+├── views/
+│   └── profile.ejs
+├── index.js
+├── package.json
+└── package-lock.json
+17. Important EJS Concepts
+
+app.set('view engine', 'ejs')
+→ Sets EJS as the view engine.
+res.render('profile')
+→ Renders the profile EJS page.
+res.render('profile', data)
+→ Renders profile.ejs with data.
+<%= value %>
+→ Displays a JavaScript value inside EJS/HTML.
+18. Remember This Flow
+
+Browser requests /danish
+        ↓
+Express route
+        ↓
+res.render('profile', data)
+        ↓
+profile.ejs
+        ↓
+<%= firstName %>
+        ↓
+Danish
+        ↓
+HTML sent to browser
+Key Point
+One EJS file + different data = different dynamic pages.
+
+
+
+
+index.js
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const ejs = require('ejs');
+
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.set('view engine', 'ejs'); // Set EJS as the view engine
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Hello World' });
+});
+
+// app.get('/sonu', (req, res) => {
+//   res.sendFile(__dirname + '/sonu.html');
+// }   );
+
+// app.get('/danish', (req, res) => {
+//   res.sendFile(__dirname + '/danish.html');
+// });
+
+
+app.get('/danish', (req, res) => {
+  res.render('profile', { firstName: 'Danish', profileImage: 'https://reqres.in/img/faces/1-image.jpg', email: 'danish@example.com' }); // Render the EJS template for sonu with data
+});
+app.get('/poorvi', (req, res) => {
+  res.render('profile', { 
+    firstName: 'Poorvi', 
+    profileImage: 'https://reqres.in/img/faces/3-image.jpg', 
+    email: 'poorvi@example.com',
+    premium : false,
+    hobbies: ['Painting', 'Gardening', 'Yoga'],
+  }); // Render the EJS template for sonu with data
+});
+app.get('/deeksha', (req, res) => {
+  res.render('profile', { 
+    firstName: 'Deeksha' , 
+    profileImage: 'https://reqres.in/img/faces/2-image.jpg', 
+    email: 'deeksha@example.com',
+    premium : true, 
+    hobbies: ['Reading', 'Traveling', 'Cooking'],
+  }); // Render the EJS template for sonu with data
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000 http://localhost:3000');
+});
+
+
+
+// /* view engine setup (dynamic pages) 
+// Request parameters (dynamic urls/routes)
+// */
+
+
+
+
+profile.ejs
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= firstName %> | Social Media</title>
+</head>
+<body>
+    <p><%= firstName %>
+    <% if (premium) { %>
+        <span style="color: gold;">&#9733; Premium User</span>  
+    <% } %>
+    </p>
+   <img src="<%= profileImage %>" alt="profile image" width="500" height="300">
+   <h1><%= email %></h1> 
+   <ul>
+     <% hobbies.forEach(hobby => { %>
+       <li><%= hobby %></li>
+     <% }); %>  
+   </ul>
+</body>
+</body>
+</html>
+
+
+
+
+dynamic routing using single route we can access all the users profile using single route and dynamic url
+
+const users = {
+  sonu: {
+    username: 'sonu',
+    firstName: 'Sonu',
+    profileImage: 'https://reqres.in/img/faces/1-image.jpg',
+    email: 'sonu@example.com',
+    premium: true,
+    hobbies: ['Reading', 'Traveling', 'Cooking'],
+  },
+  danish: {
+    username: 'danish',
+    firstName: 'Danish',
+    profileImage: 'https://reqres.in/img/faces/1-image.jpg',
+    email: 'danish@example.com',
+    premium: false,
+    hobbies: ['Painting', 'Gardening', 'Yoga'],
+  },
+  deeksha: {
+    username: 'deeksha',
+    firstName: 'Deeksha',
+    profileImage: 'https://reqres.in/img/faces/2-image.jpg',
+    email: 'deeksha@example.com',
+    premium: true,
+    hobbies: ['Painting', 'Gardening', 'Yoga'],
+  }
+};
+
+
+app.get('/:user', (req, res) => {
+  // console.log(req.params.user);
+  const user = users[req.params.user];
+  if (user) {
+    res.render('profile', user);
+  } else {
+    res.status(404).send('User not found');
+  }
+});

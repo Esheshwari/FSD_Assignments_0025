@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= firstName %> | Social Media</title>
+</head>
+<body>
+    <p><%= firstName %>
+      <% if(premium) { %>
+        <span style="color: gold;">&#9733;</span>   
+   <% } %>
+    </p>
+   <img src="<%= profileImage %>" alt="profile image" width="500" height="300">
+   <h1><%= email %></h1> 
+   <ul>
+    <% hobbies.forEach(function(hobby) { %>
+        <li><%= hobby %></li>
+    <% }); %>
+   </ul>
+</body>
+</body>
+</html>
