@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= user.firstName %>'s Profile</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; background: #f4f6f8; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .error { color: red; font-weight: bold; }
+    input { padding: 8px; margin-right: 10px; margin-bottom: 10px; }
+    button { padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-delete { background: #dc3545; }
+    .inline-form { display: inline; }
+  </style>
+</head>
+<body>
+  <a href="/users">&larr; Back to All Users</a>
+
+  <div class="card">
+    <h1><%= user.firstName %> <%= user.lastName %>'s Profile</h1>
+    <p><strong>Email:</strong> <%= user.email %></p>
+    <p><strong>Phone:</strong> <%= user.phone %></p>
+    <p><strong>Database ID:</strong> <%= user._id %></p>
+  </div>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <div class="card">
+    <h2>Add a Child</h2>
+    <form action="/users/<%= user._id %>/children" method="POST">
+      <input type="text" name="firstName" placeholder="Child First Name" required>
+      <input type="text" name="lastName" placeholder="Child Last Name" required>
+      <input type="number" name="age" placeholder="Age" min="0" required>
+      <input type="email" name="email" placeholder="Child Email (Optional)">
+      <button type="submit">Add Child</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Children List</h2>
+    <% if (children.length === 0) { %>
+      <p>No children found for this user.</p>
+    <% } else { %>
+      <ul>
+        <% children.forEach(child => { %>
+          <li style="margin-bottom: 15px;">
+            <strong><%= child.firstName %> <%= child.lastName %></strong> 
+            — Age: <%= child.age %> 
+            <% if (child.email) { %> | Email: <%= child.email %> <% } %>
+            <br>
+            <a href="/users/<%= user._id %>/children/<%= child._id %>">Verify Relationship View</a> | 
+            <a href="/children/<%= child._id %>/edit">Edit Child</a> | 
+            <form action="/children/<%= child._id %>?_method=DELETE" method="POST" class="inline-form">
+              <button type="submit" class="btn-delete" onclick="return confirm('Are you sure?')">Delete Child</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Child Relationship Detail</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; background: #f4f6f8; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 500px; }
+    .badge { background: #e2e3e5; padding: 4px 8px; border-radius: 4px; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Child Record Verified</h2>
+    <p><strong>Child Name:</strong> <%= child.firstName %> <%= child.lastName %></p>
+    <p><strong>Age:</strong> <%= child.age %></p>
+    <p><strong>Email:</strong> <%= child.email || 'N/A' %></p>
+    <hr>
+    <p><strong>Parent Name:</strong> <%= user.firstName %> <%= user.lastName %></p>
+    <p><strong>Parent DB ID:</strong> <span class="badge"><%= user._id %></span></p>
+    <p><strong>Child's stored parentId:</strong> <span class="badge"><%= child.parentId %></span></p>
+
+    <a href="/users/<%= user._id %>">&larr; Back to Profile</a>
+  </div>
+</body>
+</html>
