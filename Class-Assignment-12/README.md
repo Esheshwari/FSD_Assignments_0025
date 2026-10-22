@@ -1,6 +1,6 @@
 # Campus Lost & Found
 
-A full-stack Node.js, Express, EJS and MongoDB application for student profiles, lost/found reports, and item claims. The Mongoose schemas and database connection are kept directly in `server.js`; MongoDB does not need a separate project setup file or `.env`.
+A full-stack Node.js, Express, EJS and MongoDB application for student profiles, lost/found reports, and item claims. The Mongoose schemas and database connection are kept directly in `server.js`
 
 ## Run it on Windows
 
@@ -22,9 +22,6 @@ A full-stack Node.js, Express, EJS and MongoDB application for student profiles,
 
 The MongoDB URI is set in `server.js` to `mongodb://127.0.0.1:27017/campus_lost_found`. Change the constant in that file if your local database uses another URI.
 
-### Preview the UI without MongoDB
-
-The server still opens the home page if MongoDB is unavailable. It displays a **Preview mode** banner so you can inspect the design, but database-backed lists, sign-in, and forms need MongoDB running. Restart the app after starting MongoDB; the banner disappears once the connection succeeds.
 
 ## First-use walkthrough
 
