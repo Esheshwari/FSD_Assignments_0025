@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Found items · CampusFind</title><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/">Campus<span>Find</span></a><nav><a href="/lost-items">Lost items</a><a class="active" href="/found-items">Found items</a><a href="/students">Students</a><a href="/#report-lost">Report item</a></nav></header>
+  <main class="container page-content">
+    <p class="eyebrow">Give a belonging a way back</p><h1>Found item reports</h1>
+    <form class="search-form" method="GET" action="/found-items"><input name="search" value="<%= search %>" placeholder="Search name, category or location" aria-label="Search found items"><button class="button" type="submit">Search</button><% if (search) { %><a class="text-link" href="/found-items">Clear</a><% } %></form>
+    <% if (foundItems.length === 0) { %><div class="empty-state"><h2><%= search ? 'No matching reports' : 'No found items reported yet' %></h2><p><%= search ? 'Try another search term.' : 'When an item is found, its report will appear here.' %></p><a class="button" href="/#report-lost">Report a found item</a></div><% } else { %>
+      <div class="card-grid"><% foundItems.forEach((item) => { %>
+        <article class="panel item-card"><span class="badge <%= item.status === 'Returned' ? 'badge-returned' : 'badge-found' %>"><%= item.status %></span><p class="eyebrow"><%= item.category %></p><h2><a href="/found-items/<%= item._id %>"><%= item.itemName %></a></h2><p><%= item.foundLocation %></p><p class="muted">Found <%= item.dateFound.toLocaleDateString() %> · Reported by <%= item.reportedBy.fullName %></p><a class="text-link" href="/found-items/<%= item._id %>">View details →</a></article>
+      <% }) %></div>
+    <% } %>
+  </main>
+</body>
+</html>

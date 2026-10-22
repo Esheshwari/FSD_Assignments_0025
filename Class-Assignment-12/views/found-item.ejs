@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= foundItem.itemName %> · Found report</title><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/">Campus<span>Find</span></a><nav><a href="/lost-items">Lost items</a><a href="/found-items">Found items</a><a href="/students">Students</a><a href="/#report-lost">Report item</a></nav></header>
+  <main class="container page-content detail-page"><a class="text-link" href="/found-items">← All found reports</a>
+    <article class="panel detail-card"><span class="badge <%= foundItem.status === 'Returned' ? 'badge-returned' : 'badge-found' %>"><%= foundItem.status %></span><p class="eyebrow"><%= foundItem.category %></p><h1><%= foundItem.itemName %></h1><p class="detail-description"><%= foundItem.description %></p>
+      <dl><div><dt>Found at</dt><dd><%= foundItem.foundLocation %></dd></div><div><dt>Date found</dt><dd><%= foundItem.dateFound.toLocaleDateString() %></dd></div><div><dt>Found by</dt><dd><a href="/students/<%= foundItem.reportedBy._id %>"><%= foundItem.reportedBy.fullName %></a></dd></div><div><dt>Contact</dt><dd><a href="mailto:<%= foundItem.reportedBy.email %>"><%= foundItem.reportedBy.email %></a></dd></div></dl>
+    </article>
+    <% if (foundItem.status === 'Available' && currentStudentId && String(currentStudentId) !== String(foundItem.reportedBy._id)) { %>
+      <form class="panel form-card claim-form" action="/found-items/<%= foundItem._id %>/claims" method="POST"><p class="eyebrow">Is this yours?</p><h2>Submit a claim</h2><p class="muted">Claiming as <strong><%= currentStudentName %></strong></p><label>Why does this item belong to you?<textarea name="reason" required maxlength="1000" rows="4" placeholder="Share identifying details only the owner would know"></textarea></label><button class="button" type="submit">Submit claim</button></form>
+    <% } else if (foundItem.status === 'Available' && !currentStudentId) { %><div class="empty-state small"><p>Sign in before submitting a claim. <a class="text-link" href="/">Go to sign in</a></p></div><% } %>
+    <section class="claims-section"><div class="section-heading"><div><p class="eyebrow">Claim review</p><h2>Claims for this item</h2></div></div>
+      <% if (claims.length === 0) { %><div class="empty-state small"><p>No claims have been submitted yet.</p></div><% } else { %>
+        <% claims.forEach((claim) => { %><article class="panel claim-card"><div class="claim-header"><div><p class="eyebrow">Claim by</p><h3><%= claim.claimedBy.fullName %></h3><a href="mailto:<%= claim.claimedBy.email %>"><%= claim.claimedBy.email %></a></div><span class="badge <%= claim.status === 'Pending' ? 'badge-pending' : claim.status === 'Approved' ? 'badge-returned' : 'badge-rejected' %>"><%= claim.status %></span></div><p><%= claim.reason %></p>
+          <% if (claim.status === 'Pending' && foundItem.status === 'Available' && currentStudentId && String(currentStudentId) === String(foundItem.reportedBy._id)) { %><div class="claim-actions"><% ['Approved', 'Rejected'].forEach((decision) => { %><form action="/claims/<%= claim._id %>/status" method="POST"><input type="hidden" name="_method" value="PATCH"><input type="hidden" name="status" value="<%= decision %>"><button class="button <%= decision === 'Rejected' ? 'button-danger' : '' %>" type="submit"><%= decision === 'Approved' ? 'Approve claim & return item' : 'Reject claim' %></button></form><% }) %></div><% } %>
+        </article><% }) %>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

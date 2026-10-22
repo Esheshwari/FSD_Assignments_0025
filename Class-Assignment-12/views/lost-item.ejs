@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= item.itemName %> · Lost report</title><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/">Campus<span>Find</span></a><nav><a href="/lost-items">Lost items</a><a href="/found-items">Found items</a><a href="/students">Students</a><a href="/#report-lost">Report item</a></nav></header>
+  <main class="container page-content detail-page"><a class="text-link" href="/lost-items">← All lost reports</a>
+    <article class="panel detail-card"><span class="badge badge-lost">Lost</span><p class="eyebrow"><%= item.category %></p><h1><%= item.itemName %></h1><p class="detail-description"><%= item.description %></p>
+      <dl><div><dt>Last seen</dt><dd><%= item.lastSeenLocation %></dd></div><div><dt>Date lost</dt><dd><%= item.dateLost.toLocaleDateString() %></dd></div><div><dt>Reported by</dt><dd><a href="/students/<%= item.reportedBy._id %>"><%= item.reportedBy.fullName %></a></dd></div><div><dt>Contact</dt><dd><a href="mailto:<%= item.reportedBy.email %>"><%= item.reportedBy.email %></a></dd></div></dl>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Lost &amp; Found</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">Campus<span>Find</span></a>
+    <nav><a href="/lost-items">Lost items</a><a href="/found-items">Found items</a><a href="/students">Students</a><a href="/#report-lost">Report item</a><% if (currentStudentName) { %><span class="nav-user">Hi, <%= currentStudentName %></span><% } %></nav>
+  </header>
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">A little help finding your way back</p>
+      <h1>Lost something on campus?<br><span>Let’s bring it home.</span></h1>
+      <p>Report an item, browse recent finds, and connect belongings with their owners.</p>
+      <div class="hero-actions"><a class="button" href="#report-lost">Report an item</a><a class="button button-light" href="/found-items">Browse found items</a></div>
+    </section>
+    <% if (!databaseConnected) { %><div class="notice notice-warning"><strong>Preview mode</strong><span>MongoDB is not connected. You can explore the design, but saving and browsing records needs MongoDB running.</span></div><% } %>
+    <section class="auth-strip panel">
+      <% if (currentStudentName) { %>
+        <div><p class="eyebrow">Signed in</p><h2>Welcome, <%= currentStudentName %></h2><p class="muted">Your reports and claims will be linked to your student profile.</p></div>
+        <div class="auth-actions"><a class="button button-light" href="/students/<%= currentStudentId %>">My profile</a><form action="/auth/logout" method="POST"><button class="button button-outline" type="submit">Sign out</button></form></div>
+      <% } else { %>
+        <div><p class="eyebrow">Already have a profile?</p><h2>Sign in to report or claim</h2><p class="muted">Claims and reports are tied to your signed-in profile.</p></div>
+        <form action="/auth/login" method="POST" class="login-form">
+          <label>College email<input type="email" name="email" required autocomplete="email"></label>
+          <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+          <button class="button" type="submit" <%= databaseConnected ? '' : 'disabled' %>>Sign in</button>
+        </form>
+      <% } %>
+    </section>
+    <section class="stats">
+      <div><strong><%= lostCount %></strong><span>lost reports</span></div>
+      <div><strong><%= foundCount %></strong><span>found reports</span></div>
+      <div><strong><%= students.length %></strong><span>student profiles</span></div>
+    </section>
+    <section class="section-heading"><div><p class="eyebrow">Get started</p><h2>Report an item</h2></div></section>
+    <div class="form-grid" id="report-lost">
+      <form class="panel form-card" action="/lost-items" method="POST">
+        <h3>I lost something</h3>
+        <p class="muted">Tell the campus what you are looking for.</p>
+        <label>Item name<input name="itemName" required maxlength="100" placeholder="e.g. Blue water bottle"></label>
+        <label>Category<input name="category" required maxlength="60" placeholder="e.g. Bottle"></label>
+        <label>Description<textarea name="description" required maxlength="1000" rows="3" placeholder="Color, brand or other details"></textarea></label>
+        <label>Last seen location<input name="lastSeenLocation" required maxlength="120" placeholder="e.g. Library, second floor"></label>
+        <label>Date lost<input type="date" name="dateLost" required></label>
+        <% if (currentStudentName) { %><p class="report-owner">Reporting as <strong><%= currentStudentName %></strong></p><% } else { %><p class="form-note">Sign in or create a profile below to report an item.</p><% } %>
+        <button class="button" type="submit" <%= databaseConnected && currentStudentId ? '' : 'disabled' %>>Post lost report</button>
+      </form>
+      <form class="panel form-card" action="/found-items" method="POST">
+        <h3>I found something</h3>
+        <p class="muted">Help someone identify and claim their item.</p>
+        <label>Item name<input name="itemName" required maxlength="100" placeholder="e.g. Black umbrella"></label>
+        <label>Category<input name="category" required maxlength="60" placeholder="e.g. Accessories"></label>
+        <label>Description<textarea name="description" required maxlength="1000" rows="3" placeholder="Color, brand or other details"></textarea></label>
+        <label>Found location<input name="foundLocation" required maxlength="120" placeholder="e.g. Cafeteria entrance"></label>
+        <label>Date found<input type="date" name="dateFound" required></label>
+        <% if (currentStudentName) { %><p class="report-owner">Reporting as <strong><%= currentStudentName %></strong></p><% } else { %><p class="form-note">Sign in or create a profile below to report an item.</p><% } %>
+        <button class="button" type="submit" <%= databaseConnected && currentStudentId ? '' : 'disabled' %>>Post found report</button>
+      </form>
+    </div>
+    <section class="panel form-card profile-form">
+      <p class="eyebrow">New to CampusFind?</p><h2>Create a student profile</h2>
+      <form action="/students" method="POST" class="inline-form">
+        <label>Full name<input name="fullName" required maxlength="100"></label>
+        <label>College email<input type="email" name="email" required maxlength="254"></label>
+        <label>Department<input name="department" required maxlength="100"></label>
+        <label>Contact number<input name="contactNumber" required maxlength="30"></label>
+        <label>Password<input type="password" name="password" required minlength="8" autocomplete="new-password"><span class="field-hint">At least 8 characters</span></label>
+        <button class="button" type="submit" <%= databaseConnected ? '' : 'disabled' %>>Create profile</button>
+      </form>
+    </section>
+  </main>
+  <footer>CampusFind · Campus Lost &amp; Found Management System</footer>
+</body>
+</html>

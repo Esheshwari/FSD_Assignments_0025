@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= student.fullName %> · CampusFind</title><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/">Campus<span>Find</span></a><nav><a href="/lost-items">Lost items</a><a href="/found-items">Found items</a><a href="/students">Students</a><a href="/#report-lost">Report item</a></nav></header>
+  <main class="container page-content">
+    <a class="text-link" href="/students">← All students</a>
+    <section class="panel profile-card"><p class="eyebrow"><%= student.department %></p><h1><%= student.fullName %></h1><p><a href="mailto:<%= student.email %>"><%= student.email %></a></p><p><%= student.contactNumber %></p><p class="muted">Student ID: <code><%= student._id %></code></p></section>
+    <div class="two-columns">
+      <section><div class="section-heading"><h2>Lost reports</h2></div>
+        <% if (lostItems.length === 0) { %><div class="empty-state small"><p>No lost items reported by this student.</p></div><% } else { %>
+          <% lostItems.forEach((item) => { %><article class="panel compact-card"><a href="/lost-items/<%= item._id %>"><strong><%= item.itemName %></strong></a><p><%= item.lastSeenLocation %> · <%= item.dateLost.toLocaleDateString() %></p></article><% }) %>
+        <% } %>
+      </section>
+      <section><div class="section-heading"><h2>Found reports</h2></div>
+        <% if (foundItems.length === 0) { %><div class="empty-state small"><p>No found items reported by this student.</p></div><% } else { %>
+          <% foundItems.forEach((item) => { %><article class="panel compact-card"><a href="/found-items/<%= item._id %>"><strong><%= item.itemName %></strong></a><p><%= item.foundLocation %> · <span class="status"><%= item.status %></span></p></article><% }) %>
+        <% } %>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students · CampusFind</title><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/">Campus<span>Find</span></a><nav><a href="/lost-items">Lost items</a><a href="/found-items">Found items</a><a class="active" href="/students">Students</a><a href="/#report-lost">Report item</a></nav></header>
+  <main class="container page-content">
+    <p class="eyebrow">Campus community</p><h1>Student profiles</h1>
+    <% if (students.length === 0) { %><div class="empty-state"><h2>No profiles yet</h2><p>Create a profile from the home page to report or claim an item.</p><a class="button" href="/#report-lost">Go to home</a></div><% } else { %>
+      <div class="card-grid"><% students.forEach((student) => { %>
+        <article class="panel item-card"><p class="eyebrow"><%= student.department %></p><h2><a href="/students/<%= student._id %>"><%= student.fullName %></a></h2><p><%= student.email %></p><p class="muted"><%= student.contactNumber %></p><a class="text-link" href="/students/<%= student._id %>">View profile →</a></article>
+      <% }) %></div>
+    <% } %>
+  </main>
+</body>
+</html>
